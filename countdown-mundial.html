@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>LBDS — Mundial 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%;overflow-x:hidden;-webkit-tap-highlight-color:transparent}
+
+  body{
+    font-family:'Outfit',sans-serif;
+    background:#4a0808;color:#f5ede0;
+    display:flex;flex-direction:column;
+    align-items:center;justify-content:center;
+    min-height:100vh;min-height:100dvh;
+    position:relative;
+    padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  }
+  body::before{
+    content:'';position:fixed;inset:0;z-index:0;
+    background:
+      radial-gradient(ellipse 70% 60% at 50% 40%,rgba(140,22,22,.8),transparent),
+      radial-gradient(circle at 10% 10%,rgba(190,50,50,.3),transparent),
+      radial-gradient(circle at 90% 90%,rgba(100,8,8,.5),transparent),
+      linear-gradient(160deg,#6a1212,#380606 50%,#5a0e0e);
+  }
+  body::after{
+    content:'';position:fixed;inset:0;z-index:0;
+    background:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='f'%3E%3CfeTurbulence baseFrequency='0.8' numOctaves='5' type='fractalNoise'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)' opacity='.04'/%3E%3C/svg%3E");
+    pointer-events:none;
+  }
+
+  .table-edge{
+    position:fixed;inset:10px;z-index:0;pointer-events:none;
+    border:2px solid rgba(210,175,60,.18);border-radius:30px;
+    box-shadow:inset 0 0 80px rgba(80,5,5,.4),0 0 40px rgba(0,0,0,.5);
+  }
+
+  /* Floating elements */
+  .fl{position:fixed;z-index:0;pointer-events:none;will-change:transform}
+  .fl.a{animation:da linear infinite}
+  .fl.b{animation:db linear infinite}
+  @keyframes da{
+    0%{transform:translateY(110vh) rotate(0deg)}
+    50%{transform:translateY(45vh) rotate(180deg) scale(1.04)}
+    100%{transform:translateY(-15vh) rotate(360deg)}
+  }
+  @keyframes db{
+    0%{transform:translateY(110vh) translateX(-18px) rotate(0deg)}
+    50%{transform:translateY(45vh) translateX(18px) rotate(180deg)}
+    100%{transform:translateY(-15vh) translateX(-5px) rotate(360deg)}
+  }
+
+  /* Watermark suits */
+  .wm{position:fixed;z-index:0;pointer-events:none;font-family:'Cormorant Garamond',serif;color:rgba(255,255,255,.025)}
+  .wm1{top:-2%;left:-1%;font-size:min(28vw,220px);transform:rotate(-15deg)}
+  .wm2{bottom:-5%;right:-2%;font-size:min(32vw,260px);transform:rotate(10deg)}
+
+  .container{
+    position:relative;z-index:1;text-align:center;
+    padding:1.2rem 1rem;max-width:800px;width:100%;
+  }
+
+  /* ---- HEADER CARD ---- */
+  .card{
+    background:rgba(0,0,0,.28);
+    backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+    border:1px solid rgba(210,175,60,.12);
+    border-radius:16px;
+    padding:1.5rem 1.2rem 1.3rem;
+    margin-bottom:1.5rem;
+    position:relative;overflow:hidden;
+    box-shadow:0 8px 40px rgba(0,0,0,.35);
+  }
+  .card::before{content:'♠';position:absolute;top:10px;left:14px;font-size:.9rem;opacity:.08;color:#d4af37}
+  .card::after{content:'♥';position:absolute;bottom:10px;right:14px;font-size:.9rem;opacity:.08;color:#d4af37;transform:rotate(180deg)}
+
+  .lbds{
+    font-family:'Cormorant Garamond',serif;
+    font-size:clamp(2rem,8vw,4rem);
+    font-weight:700;letter-spacing:.1em;
+    color:#f5ede0;line-height:1;
+    text-shadow:0 2px 15px rgba(0,0,0,.3);
+  }
+  .lbds-sub{
+    font-size:clamp(.4rem,1.2vw,.58rem);
+    letter-spacing:.45em;font-weight:300;
+    color:rgba(245,237,224,.28);
+    text-transform:uppercase;
+    margin-bottom:.8rem;
+  }
+
+  /* ---- FIFA-STYLE TROPHY ---- */
+  .trophy-wrap{
+    margin:0 auto .6rem;
+    width:clamp(50px,14vw,90px);
+    filter:drop-shadow(0 4px 20px rgba(210,175,60,.25));
+  }
+  .trophy-wrap svg{width:100%;height:auto}
+
+  /* ---- MUNDIAL TITLE ---- */
+  .mundial-label{
+    font-family:'Outfit',sans-serif;
+    font-size:clamp(.45rem,1.2vw,.6rem);
+    letter-spacing:.6em;font-weight:400;
+    color:rgba(210,175,60,.5);
+    text-transform:uppercase;
+    margin-bottom:.1rem;
+  }
+
+  h1{
+    font-family:'Cormorant Garamond',serif;
+    font-size:clamp(2.2rem,9vw,5rem);
+    font-weight:700;line-height:.85;
+    margin-bottom:.2rem;
+  }
+  h1 .gold{
+    background:linear-gradient(135deg,#f5e6a3,#d4af37,#c8a030);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  }
+
+  .host-row{
+    display:flex;justify-content:center;gap:.5rem;
+    margin-bottom:.15rem;
+  }
+  .host-flag{
+    font-size:clamp(.7rem,2vw,1.1rem);
+    display:flex;align-items:center;gap:.15rem;
+  }
+  .host-flag span{
+    font-size:clamp(.4rem,1vw,.55rem);
+    font-weight:300;letter-spacing:.1em;
+    color:rgba(245,237,224,.3);
+  }
+
+  .loc{
+    font-size:clamp(.48rem,1.2vw,.62rem);
+    font-weight:300;color:rgba(210,175,60,.35);
+    letter-spacing:.08em;margin-top:.35rem;
+  }
+
+  /* ---- DRINKS ROW ---- */
+  .drinks{
+    display:flex;justify-content:center;align-items:flex-end;
+    gap:clamp(.3rem,2vw,1.2rem);
+    margin:.8rem 0 .2rem;
+    height:clamp(40px,10vw,65px);
+  }
+  .drinks svg{height:100%;width:auto;flex-shrink:0;opacity:.5}
+
+  /* ---- SIMPLE COUNTDOWN ---- */
+  .countdown{
+    display:flex;justify-content:center;align-items:baseline;
+    gap:clamp(.3rem,1.5vw,.8rem);
+    margin-bottom:1.3rem;
+    flex-wrap:wrap;
+  }
+  .cd-block{text-align:center}
+  .cd-num{
+    font-family:'Cormorant Garamond',serif;
+    font-size:clamp(2.2rem,8vw,4.5rem);
+    font-weight:700;line-height:1;
+    color:#f5ede0;
+    text-shadow:0 2px 10px rgba(0,0,0,.3);
+  }
+  .cd-num.tick{animation:numTick .3s ease-out}
+  @keyframes numTick{0%{color:#f5e6a3;transform:scale(1.08)}100%{color:#f5ede0;transform:scale(1)}}
+  .cd-label{
+    font-size:clamp(.35rem,1vw,.5rem);
+    letter-spacing:.25em;text-transform:uppercase;
+    color:rgba(245,237,224,.25);font-weight:300;
+  }
+  .cd-sep{
+    font-family:'Cormorant Garamond',serif;
+    font-size:clamp(1.5rem,5vw,3rem);
+    color:rgba(210,175,60,.25);
+    font-weight:300;
+    align-self:center;
+    padding-bottom:clamp(.4rem,1vw,.7rem);
+  }
+
+  /* ---- POKER HAND ---- */
+  .poker-hand{
+    display:flex;justify-content:center;
+    gap:clamp(.12rem,.6vw,.25rem);
+    margin-bottom:1rem;
+  }
+  .mc{
+    width:clamp(20px,5vw,36px);height:clamp(28px,7vw,50px);
+    background:rgba(255,255,255,.07);
+    border:1px solid rgba(210,175,60,.1);
+    border-radius:clamp(2px,.4vw,3px);
+    display:flex;flex-direction:column;
+    align-items:center;justify-content:center;
+    line-height:1;box-shadow:0 2px 6px rgba(0,0,0,.2);
+    transition:transform .2s;
+  }
+  .mc:active{transform:translateY(-3px) rotate(-2deg)}
+  .mc .r{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:clamp(.45rem,1.2vw,.75rem)}
+  .mc .s{font-size:clamp(.35rem,.9vw,.6rem)}
+  .mc.red .r,.mc.red .s{color:#e85050}
+  .mc.blk .r,.mc.blk .s{color:#f5ede0}
+
+  /* ---- BOTTOM INFO ---- */
+  .divider{
+    display:flex;justify-content:center;align-items:center;gap:.4rem;
+    margin-bottom:.8rem;font-size:clamp(.4rem,.8vw,.6rem);
+  }
+  .divider .ln{flex:1;max-width:50px;height:1px;background:linear-gradient(90deg,transparent,rgba(210,175,60,.1),transparent)}
+  .divider .sr{color:rgba(232,80,80,.2)}
+  .divider .sw{color:rgba(245,237,224,.1)}
+
+  .date{
+    font-size:clamp(.48rem,1.2vw,.68rem);
+    font-weight:300;color:rgba(245,237,224,.22);
+    letter-spacing:.04em;margin-bottom:.4rem;
+  }
+  .date strong{color:#d4af37;font-weight:500}
+
+  .chips{
+    display:flex;flex-wrap:wrap;justify-content:center;
+    gap:clamp(.2rem,.5vw,.35rem);
+    margin-bottom:.6rem;
+  }
+  .tag{
+    background:rgba(0,0,0,.18);
+    border:1px solid rgba(210,175,60,.07);
+    border-radius:12px;
+    padding:.15rem clamp(.35rem,1vw,.55rem);
+    font-size:clamp(.42rem,1.1vw,.58rem);
+    font-weight:300;color:rgba(245,237,224,.28);
+    white-space:nowrap;
+  }
+  .tag b{color:rgba(210,175,60,.55);font-weight:500}
+
+  .arg{
+    font-size:clamp(.45rem,1.1vw,.6rem);
+    font-weight:300;color:rgba(117,187,253,.4);
+    letter-spacing:.08em;
+  }
+
+  /* ---- RESPONSIVE ---- */
+  @media(max-width:380px){
+    .container{padding:.6rem .5rem}
+    .table-edge{inset:4px;border-radius:14px;border-width:1.5px}
+    .card{padding:1rem .7rem .9rem;border-radius:12px}
+    .drinks{height:32px}
+    .wm{display:none}
+  }
+  @media(min-width:381px)and(max-width:480px){
+    .container{padding:.8rem .7rem}
+    .table-edge{inset:6px;border-radius:18px}
+    .drinks{height:38px}
+  }
+  @media(max-height:500px)and(orientation:landscape){
+    .container{padding:.5rem .8rem}
+    .card{padding:.7rem .8rem .6rem;margin-bottom:.8rem}
+    .lbds{font-size:clamp(1.2rem,5vh,2rem)}
+    .trophy-wrap{width:clamp(30px,8vh,50px);margin-bottom:.3rem}
+    h1{font-size:clamp(1.2rem,5vh,2.5rem)}
+    .drinks{height:clamp(22px,6vh,40px);margin:.4rem 0 .1rem}
+    .cd-num{font-size:clamp(1.4rem,5vh,2.8rem)}
+    .countdown{margin-bottom:.7rem}
+    .poker-hand{margin-bottom:.5rem}
+    .wm{display:none}
+  }
+  @media(hover:hover){
+    .mc:hover{transform:translateY(-4px) rotate(-2deg)}
+  }
+</style>
+</head>
+<body>
+
+<div class="wm wm1">♠</div>
+<div class="wm wm2">♥</div>
+<div class="table-edge"></div>
+
+<div class="container">
+  <div class="card">
+    <p class="lbds">L B D S</p>
+    <p class="lbds-sub">Los Borrachos del Sillón</p>
+
+    <!-- FIFA World Cup Trophy -->
+    <div class="trophy-wrap">
+      <svg viewBox="0 0 100 160" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="g1" x1="0" y1="0" x2=".3" y2="1">
+            <stop offset="0%" stop-color="#f7edba"/>
+            <stop offset="35%" stop-color="#d4af37"/>
+            <stop offset="70%" stop-color="#b8922a"/>
+            <stop offset="100%" stop-color="#8a6e1c"/>
+          </linearGradient>
+          <linearGradient id="g2" x1=".5" y1="0" x2=".5" y2="1">
+            <stop offset="0%" stop-color="#f5e6a3"/>
+            <stop offset="100%" stop-color="#a08020"/>
+          </linearGradient>
+          <radialGradient id="gs" cx=".3" cy=".2">
+            <stop offset="0%" stop-color="rgba(255,255,255,.35)"/>
+            <stop offset="100%" stop-color="transparent"/>
+          </radialGradient>
+        </defs>
+        <!-- Base platform -->
+        <rect x="25" y="142" width="50" height="10" rx="3" fill="url(#g2)"/>
+        <rect x="30" y="138" width="40" height="6" rx="2" fill="url(#g2)"/>
+        <!-- Stem -->
+        <rect x="44" y="108" width="12" height="32" rx="4" fill="url(#g1)"/>
+        <!-- Main cup body -->
+        <path d="M18,22 Q14,65 28,88 Q36,100 50,100 Q64,100 72,88 Q86,65 82,22 Z" fill="url(#g1)"/>
+        <path d="M18,22 Q14,65 28,88 Q36,100 50,100 Q64,100 72,88 Q86,65 82,22 Z" fill="url(#gs)"/>
+        <!-- Left human figure / handle -->
+        <path d="M18,30 Q2,28 0,48 Q-1,62 8,72 Q14,78 20,75" fill="none" stroke="url(#g1)" stroke-width="5" stroke-linecap="round"/>
+        <!-- Right human figure / handle -->
+        <path d="M82,30 Q98,28 100,48 Q101,62 92,72 Q86,78 80,75" fill="none" stroke="url(#g1)" stroke-width="5" stroke-linecap="round"/>
+        <!-- Globe / world on top -->
+        <circle cx="50" cy="16" r="12" fill="url(#g2)" stroke="#f5e6a3" stroke-width="1"/>
+        <!-- Globe lines -->
+        <ellipse cx="50" cy="16" rx="12" ry="5" fill="none" stroke="rgba(255,255,255,.15)" stroke-width=".6"/>
+        <ellipse cx="50" cy="16" rx="5" ry="12" fill="none" stroke="rgba(255,255,255,.15)" stroke-width=".6"/>
+        <line x1="38" y1="16" x2="62" y2="16" stroke="rgba(255,255,255,.12)" stroke-width=".5"/>
+        <line x1="50" y1="4" x2="50" y2="28" stroke="rgba(255,255,255,.12)" stroke-width=".5"/>
+        <!-- Cup inner detail lines -->
+        <path d="M30,40 Q40,55 50,55 Q60,55 70,40" fill="none" stroke="rgba(255,255,255,.08)" stroke-width=".8"/>
+        <path d="M26,55 Q38,70 50,70 Q62,70 74,55" fill="none" stroke="rgba(255,255,255,.06)" stroke-width=".8"/>
+        <!-- Rim -->
+        <ellipse cx="50" cy="22" rx="32" ry="8" fill="none" stroke="rgba(245,230,163,.3)" stroke-width="1.2"/>
+        <!-- Base plate shine -->
+        <rect x="34" y="139" width="20" height="2" rx="1" fill="rgba(255,255,255,.12)"/>
+      </svg>
+    </div>
+
+    <p class="mundial-label">FIFA World Cup</p>
+    <h1><span class="gold">Mundial 2026</span></h1>
+
+    <div class="host-row">
+      <div class="host-flag">🇺🇸 <span>USA</span></div>
+      <div class="host-flag">🇲🇽 <span>MEX</span></div>
+      <div class="host-flag">🇨🇦 <span>CAN</span></div>
+    </div>
+
+    <p class="loc">📍 Av. del Libertador · Sillón de DAN</p>
+
+    <!-- Drinks row -->
+    <div class="drinks">
+      <svg viewBox="0 0 50 100" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="b1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f8e8a0"/><stop offset="100%" stop-color="#d4a030"/></linearGradient></defs>
+        <path d="M10,15 L8,88 Q8,94 14,94 L36,94 Q42,94 42,88 L40,15 Z" fill="rgba(255,255,255,.12)" stroke="rgba(210,175,60,.2)" stroke-width=".8"/>
+        <path d="M11,28 L9,86 Q9,92 14,92 L36,92 Q41,92 41,86 L39,28 Z" fill="url(#b1)" opacity=".6"/>
+        <ellipse cx="25" cy="28" rx="15" ry="5" fill="#fff" opacity=".6"/>
+        <ellipse cx="21" cy="25" rx="5" ry="3.5" fill="#fff" opacity=".4"/>
+        <ellipse cx="30" cy="24" rx="5" ry="3.5" fill="#fff" opacity=".4"/>
+      </svg>
+      <svg viewBox="0 0 55 120" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="w1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#6a1525"/><stop offset="100%" stop-color="#4a0a15"/></linearGradient></defs>
+        <ellipse cx="27" cy="112" rx="11" ry="3" fill="rgba(255,255,255,.08)" stroke="rgba(210,175,60,.12)" stroke-width=".5"/>
+        <rect x="25.5" y="72" width="3" height="39" rx="1.5" fill="rgba(255,255,255,.06)" stroke="rgba(210,175,60,.1)" stroke-width=".4"/>
+        <path d="M8,30 Q6,58 16,71 Q22,76 27,76 Q32,76 38,71 Q48,58 46,30 Z" fill="rgba(255,255,255,.06)" stroke="rgba(210,175,60,.12)" stroke-width=".5"/>
+        <path d="M11,42 Q10,56 17,69 Q22,73 27,73 Q32,73 37,69 Q44,56 43,42 Z" fill="url(#w1)" opacity=".65"/>
+        <ellipse cx="27" cy="42" rx="16" ry="4.5" fill="#5a1020" opacity=".3"/>
+      </svg>
+      <svg viewBox="0 0 40 110" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="bt" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#3a5a20"/><stop offset="100%" stop-color="#2a4015"/></linearGradient></defs>
+        <rect x="8" y="40" width="24" height="55" rx="4" fill="url(#bt)" opacity=".7"/>
+        <rect x="14" y="10" width="12" height="32" rx="5" fill="url(#bt)" opacity=".7"/>
+        <path d="M14,38 Q8,40 8,46" fill="none" stroke="rgba(58,90,32,.7)" stroke-width="2"/>
+        <path d="M26,38 Q32,40 32,46" fill="none" stroke="rgba(58,90,32,.7)" stroke-width="2"/>
+        <rect x="15" y="7" width="10" height="5" rx="2" fill="#c8a040" opacity=".7"/>
+        <rect x="10" y="55" width="20" height="20" rx="2" fill="#f0e8d0" opacity=".35"/>
+        <rect x="12" y="60" width="16" height="3" rx="1" fill="rgba(138,48,48,.15)"/>
+      </svg>
+      <svg viewBox="0 0 55 120" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="27" cy="112" rx="11" ry="3" fill="rgba(255,255,255,.08)" stroke="rgba(210,175,60,.12)" stroke-width=".5"/>
+        <rect x="25.5" y="72" width="3" height="39" rx="1.5" fill="rgba(255,255,255,.06)" stroke="rgba(210,175,60,.1)" stroke-width=".4"/>
+        <path d="M8,30 Q6,58 16,71 Q22,76 27,76 Q32,76 38,71 Q48,58 46,30 Z" fill="rgba(255,255,255,.06)" stroke="rgba(210,175,60,.12)" stroke-width=".5"/>
+        <path d="M11,42 Q10,56 17,69 Q22,73 27,73 Q32,73 37,69 Q44,56 43,42 Z" fill="url(#w1)" opacity=".6"/>
+        <ellipse cx="27" cy="42" rx="16" ry="4.5" fill="#5a1020" opacity=".25"/>
+      </svg>
+      <svg viewBox="0 0 55 100" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="b2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#e8c860"/><stop offset="100%" stop-color="#c89020"/></linearGradient></defs>
+        <path d="M8,18 L6,84 Q6,92 13,92 L37,92 Q44,92 44,84 L42,18 Z" fill="rgba(255,255,255,.1)" stroke="rgba(210,175,60,.18)" stroke-width=".8"/>
+        <path d="M44,35 Q55,35 55,50 Q55,65 44,65" fill="none" stroke="rgba(210,175,60,.18)" stroke-width="2" stroke-linecap="round"/>
+        <path d="M9,30 L7,82 Q7,90 13,90 L37,90 Q43,90 43,82 L41,30 Z" fill="url(#b2)" opacity=".55"/>
+        <ellipse cx="25" cy="30" rx="17" ry="5.5" fill="#fff" opacity=".55"/>
+        <ellipse cx="19" cy="27" rx="5" ry="3.5" fill="#fff" opacity=".35"/>
+        <ellipse cx="31" cy="26" rx="5" ry="3.5" fill="#fff" opacity=".35"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- SIMPLE COUNTDOWN -->
+  <div class="countdown">
+    <div class="cd-block"><div class="cd-num" id="days">--</div><div class="cd-label">Días</div></div>
+    <div class="cd-sep">:</div>
+    <div class="cd-block"><div class="cd-num" id="hours">--</div><div class="cd-label">Horas</div></div>
+    <div class="cd-sep">:</div>
+    <div class="cd-block"><div class="cd-num" id="mins">--</div><div class="cd-label">Min</div></div>
+    <div class="cd-sep">:</div>
+    <div class="cd-block"><div class="cd-num" id="secs">--</div><div class="cd-label">Seg</div></div>
+  </div>
+
+  <!-- Poker hand -->
+  <div class="poker-hand">
+    <div class="mc blk"><span class="r">A</span><span class="s">♠</span></div>
+    <div class="mc red"><span class="r">K</span><span class="s">♥</span></div>
+    <div class="mc red"><span class="r">Q</span><span class="s">♦</span></div>
+    <div class="mc blk"><span class="r">J</span><span class="s">♣</span></div>
+    <div class="mc red"><span class="r">10</span><span class="s">♥</span></div>
+  </div>
+
+  <div class="divider">
+    <span class="ln"></span>
+    <span class="sw">♠</span><span class="sr">♥</span><span class="sr">♦</span><span class="sw">♣</span>
+    <span class="ln"></span>
+  </div>
+
+  <p class="date">⚽ Apertura <strong>11 Jun</strong> · Azteca — Final <strong>19 Jul</strong> · MetLife</p>
+
+  <div class="chips">
+    <span class="tag">🏟️ <b>16</b> sedes</span>
+    <span class="tag">⚽ <b>104</b> partidos</span>
+    <span class="tag">🌍 <b>48</b> selecciones</span>
+    <span class="tag">📅 <b>39</b> días</span>
+  </div>
+
+  <p class="arg">🇦🇷 Argentina defiende la copa</p>
+</div>
+
+<script>
+  const mix=[
+    '🂡','🂢','🂣','🂥','🂧','🂩','🂫','🂮',
+    '🂱','🂳','🂵','🂷','🂹','🂻','🂾',
+    '🃁','🃃','🃅','🃇','🃉','🃋','🃎',
+    '🃑','🃓','🃕','🃗','🃙','🃛','🃞',
+    '🃏','🃏',
+    '♠','♥','♦','♣','♠','♥','♦','♣','♠','♥','♦','♣',
+    '🎲','🎲','🎰',
+    '⚽','⚽','⚽','⚽','🏆','🏆','🏆','🥅','🇦🇷','🇦🇷'
+  ];
+  const mob=window.innerWidth<500;
+  const MAX=mob?22:40;
+  let n=0;
+  function go(){
+    if(n>=MAX)return;n++;
+    const e=document.createElement('div');
+    e.className='fl '+(Math.random()>.5?'a':'b');
+    e.textContent=mix[Math.floor(Math.random()*mix.length)];
+    e.style.left=(1+Math.random()*98)+'%';
+    e.style.fontSize=(mob?.5+Math.random()*1:.7+Math.random()*2)+'rem';
+    e.style.opacity=.02+Math.random()*(mob?.04:.06);
+    const d=12+Math.random()*22;
+    e.style.animationDuration=d+'s';
+    e.style.animationDelay=-(Math.random()*d)+'s';
+    document.body.appendChild(e);
+    setTimeout(()=>{e.remove();n--;go()},d*1e3);
+  }
+  for(let i=0;i<MAX;i++)setTimeout(go,i*150);
+
+  const T=new Date(Date.UTC(2026,5,11,18,0,0));
+  const el={d:document.getElementById('days'),h:document.getElementById('hours'),m:document.getElementById('mins'),s:document.getElementById('secs')};
+  const p=n=>String(n).padStart(2,'0');
+  function tk(e,v){if(e.textContent!==v){e.textContent=v;e.classList.remove('tick');void e.offsetWidth;e.classList.add('tick')}}
+  function up(){
+    const df=Math.max(0,T-new Date()),sc=Math.floor(df/1000);
+    tk(el.d,String(Math.floor(sc/86400)));
+    tk(el.h,p(Math.floor((sc%86400)/3600)));
+    tk(el.m,p(Math.floor((sc%3600)/60)));
+    tk(el.s,p(sc%60));
+  }
+  up();setInterval(up,1000);
+</script>
+</body>
+</html>
